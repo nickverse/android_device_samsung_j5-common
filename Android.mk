@@ -15,7 +15,7 @@
 
 LOCAL_PATH := $(call my-dir)
 
-SAMSUNG_TARGETS := j5nltexx j5ltexx
+SAMSUNG_TARGETS := j5nltexx j5ltexx j53gxx j5ltedx j5lteub j5ltezt j5yltedo
 
 ifneq ($(filter $(SAMSUNG_TARGETS),$(TARGET_DEVICE)),)
 include $(call all-makefiles-under,$(LOCAL_PATH))
@@ -61,24 +61,11 @@ $(ISDB_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
 
 ALL_DEFAULT_INSTALLED_MODULES += $(ISDB_SYMLINKS)
 
-# Keymaster
-KM_IMAGES := \
-    keymaster.b00 keymaster.b01 keymaster.b02 keymaster.b03 keymaster.mdt
-
-KM_SYMLINKS := $(addprefix $(TARGET_OUT_VENDOR)/firmware/keymaster/,$(notdir $(KM_IMAGES)))
-$(KM_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
-	@echo "Keymaster firmware link: $@"
-	@mkdir -p $(dir $@)
-	@rm -rf $@
-	$(hide) ln -sf /firmware/image/keymaste$(suffix $@) $@
-
-ALL_DEFAULT_INSTALLED_MODULES += $(KM_SYMLINKS)
-
 # Kiwi
 KW_IMAGES := \
     kiwi.b00 kiwi.b01 kiwi.b02 kiwi.b03 kiwi.mdt
 
-KW_SYMLINKS := $(addprefix $(TARGET_OUT_ETC)/firmware/,$(notdir $(KM_IMAGES)))
+KW_SYMLINKS := $(addprefix $(TARGET_OUT_ETC)/firmware/,$(notdir $(KW_IMAGES)))
 $(KW_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
 	@echo "Kiwi firmware link: $@"
 	@mkdir -p $(dir $@)
@@ -153,17 +140,17 @@ $(SKM_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
 ALL_DEFAULT_INSTALLED_MODULES += $(SKM_SYMLINKS)
 
 # SKMM
-SKMM_TA_IMAGES := \
+SKMMTA_IMAGES := \
     skmm_ta.b00 skmm_ta.b01 skmm_ta.b02 skmm_ta.b03 skmm_ta.mdt
 
-SKMM_TA_SYMLINKS := $(addprefix $(TARGET_OUT_ETC)/firmware/,$(notdir $(SKMM_TA_IMAGES)))
-$(SKMM_TA_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
+SKMMTA_SYMLINKS := $(addprefix $(TARGET_OUT_ETC)/firmware/,$(notdir $(SKMMTA_IMAGES)))
+$(SKMMTA_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
 	@echo "SKMM firmware link: $@"
 	@mkdir -p $(dir $@)
 	@rm -rf $@
 	$(hide) ln -sf /firmware/image/$(notdir $@) $@
 
-ALL_DEFAULT_INSTALLED_MODULES += $(SKMM_TA_SYMLINKS)
+ALL_DEFAULT_INSTALLED_MODULES += $(SKMMTA_SYMLINKS)
 
 # SSHDcap
 SSHDCPAP_IMAGES := \
@@ -263,10 +250,10 @@ ALL_DEFAULT_INSTALLED_MODULES += $(WV_SYMLINKS)
 # Modem
 MODEM_IMAGES := \
     modem.b00 modem.b01 modem.b02 modem.b03 modem.b04 modem.b05 \
-    modem.b06 modem.b07 modem.b08 modem.b10 modem.b11 modem.b14 modem.b15 \
-    modem.b16 modem.b17 modem.b18 modem.b19 modem.b20 modem.b23 \
-    modem.b24 modem.b25 modem.b27 modem.b28 modem.mdt mba.mbn
-
+    modem.b06 modem.b07 modem.b08 modem.b10 modem.b11 modem.b12 \
+    modem.b13 modem.b14 modem.b15 modem.b16 modem.b17 modem.b18 \
+    modem.b19 modem.b20 modem.b21 modem.b23 modem.b24 modem.b25 \
+    modem.b27 modem.b28 modem.mdt mba.mbn
 MODEM_SYMLINKS := $(addprefix $(TARGET_OUT_ETC)/firmware/,$(notdir $(MODEM_IMAGES)))
 $(MODEM_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
 	@echo "Modem firmware link: $@"
@@ -282,5 +269,11 @@ $(shell mkdir -p $(TARGET_OUT_ETC)/firmware/wcd9306; \
     $(TARGET_OUT_ETC)/firmware/wcd9306/wcd9306_anc.bin; \
     ln -sf /data/misc/audio/mbhc.bin \
     $(TARGET_OUT_ETC)/firmware/wcd9306/wcd9306_mbhc.bin)
+
+$(shell mkdir -p $(TARGET_OUT_ETC)/firmware/wlan/prima; \
+    ln -sf /system/etc/wifi/WCNSS_qcom_wlan_nv.bin \
+    $(TARGET_OUT_ETC)/firmware/wlan/prima/WCNSS_qcom_wlan_nv.bin; \
+    ln -sf /data/misc/wifi/WCNSS_qcom_cfg.ini \
+    $(TARGET_OUT_ETC)/firmware/wlan/prima/WCNSS_qcom_cfg.ini)
 
 endif

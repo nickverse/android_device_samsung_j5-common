@@ -22,7 +22,7 @@ DEVICE_PACKAGE_OVERLAYS += device/samsung/j5-common/overlay
 
 # Permissions
 PRODUCT_COPY_FILES += \
-    external/ant-wireless/antradio-library/com.dsi.ant.antradio_library.xml:system/etc/permissions/com.dsi.ant.antradio_library.xml \
+    frameworks/native/data/etc/android.hardware.audio.low_latency.xml:system/etc/permissions/android.hardware.audio.low_latency.xml \
     frameworks/native/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml \
     frameworks/native/data/etc/android.hardware.camera.flash-autofocus.xml:system/etc/permissions/android.hardware.camera.flash-autofocus.xml \
     frameworks/native/data/etc/android.hardware.camera.front.xml:system/etc/permissions/android.hardware.camera.front.xml \
@@ -36,13 +36,10 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml \
     frameworks/native/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml \
     frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
-    frameworks/base/nfc-extras/com.android.nfc_extras.xml:system/etc/permissions/com.android.nfc_extras.xml \
-    frameworks/native/data/etc/android.hardware.nfc.xml:system/etc/permissions/android.hardware.nfc.xml \
-    frameworks/native/data/etc/android.hardware.nfc.hce.xml:system/etc/permissions/android.hardware.nfc.hce.xml \
     frameworks/native/data/etc/android.hardware.location.gps.xml:system/etc/permissions/android.hardware.location.gps.xml \
     frameworks/native/data/etc/android.hardware.bluetooth.xml:system/etc/permissions/android.hardware.bluetooth.xml \
     frameworks/native/data/etc/android.hardware.bluetooth_le.xml:system/etc/permissions/android.hardware.bluetooth_le.xml \
-    packages/wallpapers/LivePicker/android.software.live_wallpaper.xml:system/etc/permissions/android.software.live_wallpaper.xml
+    frameworks/native/data/etc/android.software.midi.xml:system/etc/permissions/android.software.midi.xml 
 
 # Doze
 PRODUCT_PACKAGES += \
@@ -52,11 +49,16 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     InputDisabler
 
+# Samsung libril shim library
+PRODUCT_PACKAGES += \
+    libril_shim
+
 # Audio
 PRODUCT_PACKAGES += \
     audiod \
-    audio.a2dp.default \
     audio.primary.msm8916 \
+    audio_policy.msm8916 \
+    audio.a2dp.default \
     audio.r_submix.default \
     audio.usb.default \
     libaudio-resampler \
@@ -77,6 +79,7 @@ PRODUCT_PACKAGES += \
     gralloc.msm8916 \
     hwcomposer.msm8916 \
     memtrack.msm8916 \
+    librs_jni \
     libtinyxml
 
 # Power
@@ -100,28 +103,30 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     gps.msm8916
 
-# OMX
+# Media
 PRODUCT_PACKAGES += \
+    libextmedia_jni \
+    libqcmediaplayer \
+    libdashplayer \
+    libOmxVidcCommon \
+    libOmxVenc \
+    libOmxVdec \
+    libOmxCore \
     libOmxAacEnc \
     libOmxAmrEnc \
-    libOmxCore \
     libOmxEvrcEnc \
     libOmxQcelp13Enc \
-    libOmxVdec \
-    libOmxVenc \
-    libstagefrighthw \
-    libdashplayer \
-    qcmediaplayer
-
-PRODUCT_BOOT_JARS += \
-    qcmediaplayer
+    libstagefrighthw
 
 # FM
 PRODUCT_PACKAGES += \
     FM2 \
-    FMRecord \
     libqcomfm_jni \
     qcom.fmradio
+
+# Gello
+PRODUCT_PACKAGES += \
+    Gello
 
 # IPv6 tethering
 PRODUCT_PACKAGES += \
@@ -129,37 +134,31 @@ PRODUCT_PACKAGES += \
     ethertypes \
     libebtc
 
-# Ramdisk
+# Configuration scripts
 PRODUCT_PACKAGES += \
     init.crda.sh \
     init.qcom.bt.sh \
-    init.qcom.coex.sh
+    init.qcom.coex.sh \
+    init.qcom.fm.sh
 
+# Ramdisk
 PRODUCT_PACKAGES += \
     fstab.qcom \
     init.qcom.rc \
-    init.qcom.power.rc \
     init.qcom.usb.rc \
+    init.qcom.power.rc \
     init.recovery.qcom.rc \
     ueventd.qcom.rc
 
-# USB
-PRODUCT_PACKAGES += \
-    com.android.future.usb.accessory
-
 # Filesystem
 PRODUCT_PACKAGES += \
-    e2fsck \
-    mkfs.f2fs \
-    fsck.f2fs \
-    fibmap.f2fs
+    fsck.f2fs
 
 # Live Wallpapers
 PRODUCT_PACKAGES += \
     LiveWallpapers \
     LiveWallpapersPicker \
-    VisualizationWallpapers \
-    librs_jni
+    VisualizationWallpapers
 
 # WCNSS service daemon
 PRODUCT_PACKAGES += \
@@ -177,18 +176,10 @@ PRODUCT_PACKAGES += \
     libxml2 \
     Stk
 
-# NFC packages
+# Misc libs
 PRODUCT_PACKAGES += \
-    libnfc_nci \
-    NfcNci \
-    Tag \
-    com.android.nfc_extras
-
-# NFC configuration
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/nfc/libnfc-brcm.conf:system/etc/libnfc-brcm.conf \
-    $(LOCAL_PATH)/nfc/libnfc-nxp.conf:system/etc/libnfc-nxp.conf \
-    $(LOCAL_PATH)/nfc/nfcee_access.xml:system/etc/nfcee_access.xml
+    libstlport \
+    libboringssl-compat
 
 # Audio configuration
 PRODUCT_COPY_FILES += \
@@ -211,15 +202,19 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:system/etc/media_codecs_google_audio.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml:system/etc/media_codecs_google_telephony.xml \
-    frameworks/av/media/libstagefright/data/media_codecs_google_video.xml:system/etc/media_codecs_google_video.xml \
+    frameworks/av/media/libstagefright/data/media_codecs_google_video_le.xml:system/etc/media_codecs_google_video_le.xml \
     $(LOCAL_PATH)/media/media_codecs.xml:system/etc/media_codecs.xml \
+    $(LOCAL_PATH)/media/media_codecs_performance.xml:system/etc/media_codecs_performance.xml \
     $(LOCAL_PATH)/media/media_profiles.xml:system/etc/media_profiles.xml
+
+# ExtSD rw permissions fix
+# PRODUCT_COPY_FILES += \
+#    $(LOCAL_PATH)/configs/platform.xml:system/etc/permissions/platform.xml
 
 # Keylayouts
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/keylayout/gpio-keys.kl:system/usr/keylayout/gpio-keys.kl \
     $(LOCAL_PATH)/keylayout/sec_touchkey.kl:system/usr/keylayout/sec_touchkey.kl \
-    $(LOCAL_PATH)/keylayout/Synaptics_RMI4_TouchPad_Sensor.idc:system/usr/idc/Synaptics_RMI4_TouchPad_Sensor.idc \
     $(LOCAL_PATH)/keylayout/Synaptics_HID_TouchPad.idc:system/usr/idc/Synaptics_HID_TouchPad.idc
 
 # GPS config
@@ -227,7 +222,8 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/gps.conf:system/etc/gps.conf \
     $(LOCAL_PATH)/configs/sap.conf:system/etc/sap.conf \
     $(LOCAL_PATH)/configs/flp.conf:system/etc/flp.conf \
-    $(LOCAL_PATH)/configs/izat.conf:system/etc/izat.conf
+    $(LOCAL_PATH)/configs/izat.conf:system/etc/izat.conf \
+    $(LOCAL_PATH)/configs/somxreg.conf:system/etc/somxreg.conf
 
 # GPS/location security configuration file
 PRODUCT_COPY_FILES += \
@@ -237,19 +233,25 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/prima/WCNSS_cfg.dat:system/etc/firmware/wlan/prima/WCNSS_cfg.dat \
     $(LOCAL_PATH)/prima/WCNSS_qcom_cfg.ini:system/etc/wifi/WCNSS_qcom_cfg.ini \
-    $(LOCAL_PATH)/prima/WCNSS_qcom_cfg.ini:system/etc/firmware/wlan/prima/WCNSS_qcom_cfg.ini \
-    $(LOCAL_PATH)/prima/WCNSS_qcom_wlan_nv.bin:system/etc/firmware/wlan/prima/WCNSS_qcom_wlan_nv.bin
+    $(LOCAL_PATH)/prima/WCNSS_qcom_wlan_nv.bin:system/etc/wifi/WCNSS_qcom_wlan_nv.bin
 
 # Wi-Fi
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/wifi/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf \
     $(LOCAL_PATH)/configs/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf
+    
+# Config files for hostapd
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/wifi/hostapd_default.conf:system/etc/hostapd/hostapd_default.conf \
+    $(LOCAL_PATH)/configs/wifi/hostapd.accept:system/etc/hostapd/hostapd.accept \
+    $(LOCAL_PATH)/configs/wifi/hostapd.deny:system/etc/hostapd/hostapd.deny
 
 # SoftAP
 PRODUCT_PACKAGES += \
     libcurl \
     libqsap_sdk \
     libQWiFiSoftApCfg \
+    hostapd \
     wcnss_service
 
 # CRDA
@@ -262,16 +264,9 @@ PRODUCT_PACKAGES += \
 # WPA supplicant
 PRODUCT_PACKAGES += \
     dhcpcd.conf \
-    hostapd \
     libwpa_client \
     wpa_supplicant \
     wpa_supplicant.conf
-
-# USB
-PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
-    persist.sys.usb.config=mtp \
-    ro.sys.usb.default.config=mtp \
-    persist.sys.isUsbOtgEnabled=true
 
 # Default.prop overrides to get adb working at boot   
 ADDITIONAL_DEFAULT_PROPERTIES += \
@@ -280,14 +275,16 @@ ADDITIONAL_DEFAULT_PROPERTIES += \
 
 # RIL
 PRODUCT_PROPERTY_OVERRIDES += \
-    ro.telephony.ril_class=SamsungJ5RIL
+    ro.telephony.ril_class=J5RIL
 
 # We have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise
 
 # Recovery
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/recovery/twrp.fstab:recovery/root/etc/twrp.fstab
+    $(LOCAL_PATH)/recovery/twrp.fstab:recovery/root/etc/twrp.fstab \
+    $(LOCAL_PATH)/recovery/parted:recovery/root/sbin/parted \
+    $(LOCAL_PATH)/recovery/parted:system/bin/parted
 
 # Common qcom
 $(call inherit-product, device/samsung/qcom-common/qcom-common.mk)

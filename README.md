@@ -1,5 +1,5 @@
-Device Tree For Samsung Galaxy J5 LTE
-===================================== 
+Device tree for Samsung Galaxy J5
+=================================
 
 Basic   | Spec Sheet
 -------:|:-------------------------
@@ -18,4 +18,4 @@ Rear Camera  | 13 MP,  4128 x 3096 pixels, autofocus, LED flash
 
 ![Galaxy J5 LTE](https://www.germanos.gr/images/type1/20304852/20304852_samsunggalaxyj5blacka_medium.png "Galaxy J5 LTE")
 
-This branch is for building CyanogenMod 12.1 Firmware.
+This branch is for building CyanogenMod Firmware.

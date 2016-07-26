@@ -106,7 +106,6 @@ public class ScreenStateReceiver extends BroadcastReceiver implements SensorEven
                         break;
                 }
 
-
                 break;
         }
     }

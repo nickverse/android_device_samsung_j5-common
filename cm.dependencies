@@ -8,15 +8,15 @@
     "target_path": "device/samsung/qcom-common"
   },
   {
-    "repository": "android_kernel_samsung_j5nlte",
-    "target_path": "kernel/samsung/j5nlte"
+    "repository": "samsung_j5_kernel-mm",
+    "target_path": "kernel/samsung/j5lte_cm13"
   },
   {
-    "repository": "android_hardware_qcom_fm",
-    "target_path": "hardware/qcom/fm"
+    "repository": "android_external_stlport",
+    "target_path": "external/stlport"
   },
   {
-    "repository": "android_external_mm-dash",
-    "target_path": "external/mm-dash"
+    "repository": "android_external_sony_boringssl-compat",
+    "target_path": "external/sony/boringssl-compat"
   }
 ]

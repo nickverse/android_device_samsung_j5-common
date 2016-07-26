@@ -39,26 +39,14 @@ TARGET_CPU_CORTEX_A53 := true
 TARGET_SPECIFIC_HEADER_PATH := device/samsung/j5-common/include
 
 # Kernel
-BOARD_CUSTOM_BOOTIMG_MK      := device/samsung/j5-common/mkbootimg.mk
+TARGET_KERNEL_ARCH           := arm
+BOARD_DTBTOOL_ARG            := -2
 BOARD_KERNEL_CMDLINE         := console=null androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x3F ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci androidboot.selinux=permissive
 BOARD_KERNEL_BASE            := 0x80000000
 BOARD_RAMDISK_OFFSET         := 0x02000000
 BOARD_KERNEL_TAGS_OFFSET     := 0x01e00000
 BOARD_KERNEL_SEPARATED_DT    := true
 BOARD_KERNEL_PAGESIZE        := 2048
-TARGET_KERNEL_SOURCE         := kernel/samsung/j5nlte
-
-# Partition sizes
-BOARD_BOOTIMAGE_PARTITION_SIZE := 13631488
-BOARD_RECOVERYIMAGE_PARTITION_SIZE := 15728640
-BOARD_SYSTEMIMAGE_PARTITION_SIZE := 2181038080
-BOARD_PERSISTIMAGE_PARTITION_SIZE := 8388608
-BOARD_CACHEIMAGE_PARTITION_SIZE := 209715200
-BOARD_USERDATAIMAGE_PARTITION_SIZE := 5016350720
-#(5016367104-16384= 5016350720 bytes)
-TARGET_USERIMAGES_USE_EXT4 := true
-TARGET_USERIMAGES_USE_F2FS := true
-BOARD_FLASH_BLOCK_SIZE := 131072
 
 # Bluetooth
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/samsung/j5-common/bluetooth
@@ -66,40 +54,42 @@ BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_QCOM := true
 BLUETOOTH_HCI_USE_MCT := true
 
-# Custom RIL class
-BOARD_RIL_CLASS := ../../../device/samsung/j5-common/ril/
-
-# NFC
-BOARD_HAVE_NFC := true
-
 # Fonts
 EXTENDED_FONT_FOOTPRINT := true
 
-# malloc implementation
-MALLOC_IMPL := dlmalloc
+# CMHW
+BOARD_HARDWARE_CLASS += device/samsung/j5-common/cmhw
 
 # Audio
 BOARD_USES_ALSA_AUDIO := true
+TARGET_USES_QCOM_MM_AUDIO := true
 AUDIO_FEATURE_LOW_LATENCY_PRIMARY := true
+AUDIO_FEATURE_ENABLED_PCM_OFFLOAD := true
+AUDIO_FEATURE_ENABLED_FM := true
+AUDIO_FEATURE_ENABLED_ACDB_LICENSE := true
+AUDIO_FEATURE_ENABLED_NEW_SAMPLE_RATE := true
+AUDIO_FEATURE_ENABLED_WFD_CONCURRENCY := true
+AUDIO_FEATURE_ENABLED_VOICE_CONCURRENCY := true
+AUDIO_FEATURE_ENABLED_RECORD_PLAY_CONCURRENCY := true
+AUDIO_FEATURE_ENABLED_KPI_OPTIMIZE := true
+
+# Custom RIL class
+BOARD_RIL_CLASS := ../../../device/samsung/j5-common/ril/
+USE_DEVICE_SPECIFIC_DATASERVICES := true
+
+#PowerHAL
+TARGET_POWERHAL_SET_INTERACTIVE_EXT := $(LOCAL_PATH)/power/power_ext.c
+TARGET_POWERHAL_VARIANT := qcom
 
 # Charger
 BOARD_CHARGER_SHOW_PERCENTAGE := true
 BOARD_CHARGER_ENABLE_SUSPEND := true
 
-# Enable QCOM FM feature
-TARGET_QCOM_NO_FM_FIRMWARE := true
-AUDIO_FEATURE_ENABLED_FM := true
-
 # Enable HW based full disk encryption
 TARGET_HW_DISK_ENCRYPTION := true
 
-# Build our own PowerHAL
-TARGET_POWERHAL_SET_INTERACTIVE_EXT := $(LOCAL_PATH)/power/power_ext.c
-TARGET_POWERHAL_VARIANT := qcom
-
 # Wifi
 BOARD_HAS_QCOM_WLAN 		 := true
-BOARD_HAS_QCOM_WLAN_SDK 	 := true
 BOARD_HOSTAPD_DRIVER 		 := NL80211
 BOARD_HOSTAPD_PRIVATE_LIB 	 := lib_driver_cmd_qcwcn
 BOARD_WLAN_DEVICE 		 := qcwcn
@@ -130,30 +120,29 @@ BOARD_VOLD_MAX_PARTITIONS := 65
 TARGET_PROVIDES_CAMERA_HAL := true
 USE_DEVICE_SPECIFIC_CAMERA := true
 
-# CMHW
-BOARD_HARDWARE_CLASS += device/samsung/j5-common/cmhw
-
 # Workaround to avoid issues with legacy liblights on QCOM platforms
 TARGET_PROVIDES_LIBLIGHT := true
 
 # Qcom
-BOARD_USES_QC_TIME_SERVICES := true
 TARGET_USES_QCOM_BSP := true
 TARGET_PLATFORM_DEVICE_BASE := /devices/soc.0/
 PROTOBUF_SUPPORTED := true
-HAVE_SYNAPTICS_I2C_RMI4_FW_UPGRADE := true
 COMMON_GLOBAL_CFLAGS += -DQCOM_BSP
+BOARD_USES_QC_TIME_SERVICES := true
 
 # Media
 TARGET_QCOM_MEDIA_VARIANT := caf
-TARGET_ENABLE_QC_AV_ENHANCEMENTS := true
+TARGET_QCOM_AUDIO_VARIANT := caf
+TARGET_QCOM_DISPLAY_VARIANT := caf
 
 # Display
+BOARD_EGL_CFG := $(LOCAL_PATH)/configs/egl.cfg
 TARGET_CONTINUOUS_SPLASH_ENABLED := true
 NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
 MAX_EGL_CACHE_KEY_SIZE := 12*1024
 MAX_EGL_CACHE_SIZE := 2048*1024
 OVERRIDE_RS_DRIVER := libRSDriver_adreno.so
+TARGET_FORCE_HWC_FOR_VIRTUAL_DISPLAYS := true
 
 # ANT+
 BOARD_ANT_WIRELESS_DEVICE := "vfs-prerelease"
@@ -164,24 +153,6 @@ include device/qcom/sepolicy/sepolicy.mk
 BOARD_SEPOLICY_DIRS += \
     device/samsung/j5-common/sepolicy
 
-BOARD_SEPOLICY_UNION += \
-    bluetooth_loader.te \
-    file_contexts \
-    mediaserver.te \
-    property_contexts \
-    system_app.te \
-    time_daemon.te \
-    vold.te \
-    bluetooth.te \
-    file.te \
-    kernel.te \
-    mm-qcamerad.te \
-    property.te \
-    rild.te \
-    system_server.te \
-    ueventd.te \
-    wcnss_service.te
-
 # Misc.
 TARGET_SYSTEM_PROP := device/samsung/j5-common/system.prop
 
@@ -190,8 +161,7 @@ TARGET_SYSTEM_PROP := device/samsung/j5-common/system.prop
 TW_THEME := portrait_hdpi
 RECOVERY_GRAPHICS_USE_LINELENGTH := true
 TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
-#TW_BRIGHTNESS_PATH := "/sys/class/leds/lcd-backlight/brightness"
-TW_BRIGHTNESS_PATH := "/sys/devices/soc.0/1a00000.qcom\x2cmdss_mdp/qcom\x2cmdss_fb_primary.138/leds/lcd-backlight/brightness"
+TW_BRIGHTNESS_PATH := "/sys/devices/soc.0/1a00000.qcom\x2cmdss_mdp/qcom\x2cmdss_fb_primary.137/leds/lcd-backlight/brightness"
 TW_MAX_BRIGHTNESS := 255
 TW_NEW_ION_HEAP := true
 TW_TARGET_USES_QCOM_BSP := true
@@ -199,20 +169,17 @@ TW_TARGET_USES_QCOM_BSP := true
 # Keys
 BOARD_HAS_NO_SELECT_BUTTON := true
 
-# MTP
-BOARD_MTP_DEVICE := "/dev/usb_mtp_gadget"
-
 # Storage
+#RECOVERY_VARIANT := twrp
 #TARGET_RECOVERY_FSTAB := device/samsung/j5-common/recovery/twrp.fstab
-TARGET_RECOVERY_FSTAB := device/samsung/j5-common/rootdir/etc/fstab.qcom
+TARGET_RECOVERY_FSTAB := device/samsung/j5-common/rootdir/main/fstab.qcom
 TW_INTERNAL_STORAGE_PATH := "/data/media"
 TW_INTERNAL_STORAGE_MOUNT_POINT := "data"
 TW_EXTERNAL_STORAGE_PATH := "/external_sd"
 TW_EXTERNAL_STORAGE_MOUNT_POINT := "external_sd"
-TW_NO_USB_STORAGE := true
-#TW_MTP_DEVICE := "/dev/mtp_usb"
+TW_MTP_DEVICE := "/dev/mtp_usb"
+BOARD_MTP_DEVICE := "/dev/mtp_usb"
 RECOVERY_SDCARD_ON_DATA := true
-#RECOVERY_VARIANT := twrp
 
 # Misc.
 BOARD_USES_MMC_UTILS := true
@@ -220,6 +187,8 @@ BOARD_SUPPRESS_EMMC_WIPE := true
 BOARD_HAS_NO_MISC_PARTITION := true
 TW_HAS_DOWNLOAD_MODE := true
 TW_NO_REBOOT_BOOTLOADER := true
+TW_INCLUDE_CRYPTO := true
+TW_NO_USB_STORAGE := true
 TARGET_RECOVERY_QCOM_RTC_FIX := true
 BOARD_RECOVERY_SWIPE := true
 
